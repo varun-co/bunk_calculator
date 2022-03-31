@@ -7,16 +7,16 @@ import img2pdf
 import pandas as pd
 
 
-def convert_pdf_to_csv():
+def convert_pdf_to_csv(mode,filename):
     # convert pdf to mc calandar pdf to csv file
-    with pdfplumber.open(r'MC-Calandar_2021-22.pdf') as f:
+    with pdfplumber.open(filename + '.pdf') as f:
         for page in f.pages:
             tables = page.extract_tables()
-            if len(tables) != 1:
+            if len(tables) != 1 and mode == 'cal':
                 tables.pop()
             for table in tables:
                 data = pd.DataFrame(table[1:], columns=table[0])
-                data.to_csv(r'MC_calendar.csv', mode='a', encoding="ANSI")
+                data.to_csv(filename + '.csv', mode='a', encoding="ANSI")
 
 
 def preprocess_csv(filename):
@@ -77,10 +77,11 @@ def convert_img_to_pdf(filename):
     file.close()
 
 def main():
-    '''convert_pdf_to_csv()
-    lt = preprocess_csv('MC_calendar.csv')
+    convert_pdf_to_csv('cal','MC-Calandar_2021-22')
+    lt = preprocess_csv('MC-Calandar_2021-22.csv')
     days = get_days_dict(lt)
-    print(days) '''
+    print(days)
     convert_img_to_pdf('time_table')
+    convert_pdf_to_csv('tim','time_table')
 if __name__ == '__main__':
     main()
