@@ -7,7 +7,7 @@ import img2pdf
 import pandas as pd
 
 
-def convert_pdf_to_csv(mode,filename):
+def convert_pdf_to_csv(mode, filename):
     # convert pdf to mc calandar pdf to csv file
     with pdfplumber.open(filename + '.pdf') as f:
         for page in f.pages:
@@ -32,6 +32,7 @@ def preprocess_csv(filename):
 
     return lt
 
+
 def get_days_dict(lt):
     cal = {}
     for i in range(3, len(lt[0])):
@@ -48,17 +49,17 @@ def get_days_dict(lt):
         if not (len(it[1]) == 0 or it[1] == '-'):
             try:
                 temp = int(it[1])
-                print(it[1])
                 days[it[0]] = days.get(it[0], 0) + 1
             except:
                 if it[1] == 'CIA I (I Yr)' or it[1] == 'CIA II (I Year)' or it[
                         1] == 'CIA III (I Yr)':
-                    print(it[1])
                     days[it[0]] = days.get(it[0], 0) + 1
 
     print(sum(days.values()))
     #print(days)
     return days
+
+
 def convert_img_to_pdf(filename):
     img_path = filename + '.png'
 
@@ -76,12 +77,15 @@ def convert_img_to_pdf(filename):
 
     file.close()
 
+
 def main():
-    convert_pdf_to_csv('cal','MC-Calandar_2021-22')
+    os.remove('MC-Calandar_2021-22.csv')
+    convert_pdf_to_csv('cal', 'MC-Calandar_2021-22')
     lt = preprocess_csv('MC-Calandar_2021-22.csv')
     days = get_days_dict(lt)
-    print(days)
+    #print(days)
     convert_img_to_pdf('time_table')
-    convert_pdf_to_csv('tim','time_table')
+
+
 if __name__ == '__main__':
     main()
