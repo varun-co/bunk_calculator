@@ -5,6 +5,7 @@ from PIL import Image
 import os
 import img2pdf
 import pandas as pd
+from datetime import date
 
 
 def convert_pdf_to_csv(mode, filename):
@@ -83,6 +84,8 @@ def main():
     convert_pdf_to_csv('cal', 'MC-Calandar_2021-22')
     lt = preprocess_csv('MC-Calandar_2021-22.csv')
     days = get_days_dict(lt)
+    today = date.today().strftime('%d-%m-%y')
+    print(today)
     #print(days)
     convert_img_to_pdf('time_table')
 

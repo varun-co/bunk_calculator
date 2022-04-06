@@ -6,6 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import Select
 import tkinter as tk
+from selenium.webdriver.chrome.options import Options
+
 #from os import wait
 import time
 import ocr
@@ -14,13 +16,14 @@ from PIL import ImageTk, Image
 import threading
 import queue
 from bunk_calculator import *
+import re
 
 
 #from Screenshot import Screenshot_clipping
 def capt():
 
     window = tk.Tk()
-    window.geometry("500x300")
+    window.geometry("200x100")
     frame = tk.Frame(window)
     frame.pack()
     img = ImageTk.PhotoImage(Image.open("cap.png"))
@@ -31,7 +34,12 @@ def capt():
 
 def get_time_table(reg_no, password):
     url = 'https://webstream.sastra.edu/sastraparentweb/'
-    driver = webdriver.Chrome()
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--silent")
+    chrome_options.add_experimental_option('excludeSwitches',
+                                           ['enable-logging'])
+    driver = webdriver.Chrome(options=chrome_options)
     page = driver.get(url)
     driver.find_element_by_xpath('//*[@id="txtRegNumber"]').send_keys(reg_no)
     driver.find_element_by_xpath('//*[@id="txtPwd"]').send_keys(password)
@@ -144,14 +152,23 @@ def get_time_table(reg_no, password):
     for a in attendance_marked:
         print(*a)
     print('Subject', 'total', 'Marked', 'Absent', 'bunks_left', sep='\t')
+    sum_bunk = 0
     for i in range(1, len(attendance_marked)):
-        print(attendance_marked[i][0],
-              final[attendance_marked[i][0] + '-' + section],
+        temp = attendance_marked[i][0]
+        res = None
+        for key in final.keys():
+            pattern = f'^{temp}'
+            if re.search(pattern, key) != None:
+                res = key
+                break
+        print(attendance_marked[i][0][:6],
+              final[key],
               attendance_marked[i][2],
               attendance_marked[i][4],
-              (final[attendance_marked[i][0] + '-' + section] / 5) -
-              int(attendance_marked[i][4]),
+              int((final[key] / 5) - int(attendance_marked[i][4])),
               sep='\t')
+        sum_bunk += int(final[key] / 5 - int(attendance_marked[i][4]))
+    print('total bunks left:', sum_bunk)
 
     time.sleep(5)
     driver.close()
@@ -160,4 +177,4 @@ def get_time_table(reg_no, password):
 
 # giver register no and password
 
-get_time_table('123004270', '13122001')
+get_time_table(input('Enter the RegNo:'), input('Enter the dob'))
