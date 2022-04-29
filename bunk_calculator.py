@@ -84,11 +84,10 @@ def main():
     convert_pdf_to_csv('cal', 'MC-Calandar_2021-22')
     lt = preprocess_csv('MC-Calandar_2021-22.csv')
     days = get_days_dict(lt)
+    print('hi')
     today = date.today().strftime('%d-%m-%y')
-    print(today)
-    #print(days)
+    #print(today)
+    print(days)
     convert_img_to_pdf('time_table')
-
-
 if __name__ == '__main__':
     main()
