@@ -8,6 +8,8 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import Select
 import tkinter as tk
+import os
+import shutil
 from selenium.webdriver.chrome.options import Options
 import math
 
@@ -31,15 +33,15 @@ class scrapper :
         self.driver = webdriver.Chrome(options=chrome_options)
         self.page = self.driver.get(url)
         self.captchaPath = 'static/image/cap.png'
-        img = self.driver.find_element_by_xpath('//*[@id="imgCaptcha"]')
+        img = WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="imgCaptcha"]')))
         img.click()
         time.sleep(1)
         img.screenshot('static/images/cap.png')
         print('done')
     def getTimeTable(self,reg_no,password,cap):
         
-        self.driver.find_element_by_xpath('//*[@id="txtRegNumber"]').send_keys(reg_no)
-        self.driver.find_element_by_xpath('//*[@id="txtPwd"]').send_keys(password)
+        WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="txtRegNumber"]'))).send_keys(reg_no)
+        WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="txtPwd"]'))).send_keys(password)
         '''img = driver.find_element_by_xpath('//*[@id="imgCaptcha"]')
         img.click()
         time.sleep(1)
@@ -51,29 +53,23 @@ class scrapper :
         t1.start()
         cap = input('Enter the captcha: ')
         #print(cap) '''
-        captcha = self.driver.find_element_by_xpath('//*[@id="answer"]').send_keys(cap)
-        self.driver.find_element_by_xpath(
-            '//*[@id="frmLogin"]/div[3]/table/tbody/tr[6]/td/input').click()
-        time.sleep(10)
+        WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="answer"]'))).send_keys(cap)
+        WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="frmLogin"]/div[3]/table/tbody/tr[6]/td/input'))).click()
         try:
-            self.driver.find_element_by_xpath(
-                '//*[@id="masterdiv"]/div[6]/a/font').click()
+            time.sleep(0.5)
+            WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="masterdiv"]/div[6]/a/font'))).click()
         except:
             self.driver.close()
             self.getTimeTable(reg_no, password,cap)
-        time.sleep(3)
-        timetable = self.driver.find_elements_by_xpath(
-            '//*[@id="courseDetails"]/tbody/tr')
+        #timetable = WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="courseDetails"]/tbody/tr')))
 
-        cols = self.driver.find_elements_by_xpath(
-            '//*[@id="courseDetails"]/tbody/tr[3]/td')
+        cols = WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="courseDetails"]/tbody/tr[3]/td')))
         timetable = []
         for i in range(2, 9):
             timetable.append([])
             for j in range(1, 12):
-                s = self.driver.find_element_by_xpath(
-                    '//*[@id="courseDetails"]/tbody/tr[' + str(i) + ']/td[' +
-                    str(j) + ']').text
+                s = WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="courseDetails"]/tbody/tr[' + str(i) + ']/td[' +
+                    str(j) + ']'))).text
                 timetable[i - 2].append(s)
         #print(tt)
         for i, t in enumerate(timetable):
@@ -133,13 +129,9 @@ class scrapper :
         #print(timetable)
         t1.join()
         time.sleep(30) '''
-        self.driver.find_element_by_xpath('//*[@id="masterdiv"]/div[11]/a/font').click()
-        time.sleep(3)
-        r = len(
-            self.driver.find_elements_by_xpath('//*[@id="form01"]/table[1]/tbody/tr'))
-        c = len(
-            self.driver.find_elements_by_xpath(
-                '//*[@id="form01"]/table[1]/tbody/tr[5]/td'))
+        WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="masterdiv"]/div[11]/a/font'))).click()
+        r = len(WebDriverWait(self.driver,10).until(EC.presence_of_all_elements_located((By.XPATH,'//*[@id="form01"]/table[1]/tbody/tr'))))
+        c = len(WebDriverWait(self.driver,10).until(EC.presence_of_all_elements_located((By.XPATH,'//*[@id="form01"]/table[1]/tbody/tr[5]/td'))))
         section = list(final.keys())[0][-1:]
         print(section)
         print(r, c)
@@ -184,6 +176,7 @@ class scrapper :
         totalpercent = totalpercent/len(result)
         print('total bunks left:', sum_bunk)
         # convert into a two 2d list 
+        shutil.copy('static/images/cap.png',os.path.join('captcha',cap +'.png'))
         return result,(totalClasses,totalMarked,totalPresent,round(totalpercent,2),totalBunk,totalBunkleft)
         time.sleep(5)
         self.driver.close()
