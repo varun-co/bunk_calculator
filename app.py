@@ -9,7 +9,7 @@ app = Flask(__name__)
 obj = newScrapper.scrapper('https://webstream.sastra.edu/sastraparentweb/')
 
 
-@app.route("/")
+@app.route("/",methods=['POST','GET'])
 def home():
     return render_template('index.html')
 
