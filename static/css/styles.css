@@ -28,6 +28,11 @@ input {
      display: block;
      margin : 20px;
  }
+ .center {
+     position : absolute;
+     top : 45%;
+     left : 45%
+ }
 h1 {
     text-align: center;
     margin : 10px;
@@ -39,7 +44,7 @@ h1 {
      border : 20px;
      border-radius: 10px;
      font-size: 15px;
-     background-color:rgb(88, 21, 196);
+     background-color:rgb(36, 104, 194);
      color : white;
  }
  table {
