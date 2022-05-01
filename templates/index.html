@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel= "stylesheet" href="{{ url_for('static',filename='css/styles.css') }}">
+ </head>
+  <body>
+    <script src="{{ url_for('static',filename='javascript/scripts.js') }}"> </script>
+    <div>
+      <form action='/cal' method="post" class ='center'>
+          <div class="first">
+            <div class ='second'>
+              <h1> Bunk calculator </h1>
+            </div>
+            <div class="second">
+              <label> Reg No </label>
+              <input type="text" name="regNo">
+            </div>
+            <div class="second">
+              <label> DOB </label>
+              <input type="text" name= 'dob'>
+            </div>
+            <div class="second">
+              <label> Captcha </label>
+              <input type="text" name="captcha">
+            </div>
+            <div class="second">
+              <img src="{{ url_for('static' , filename='images/cap.png') }}"> 
+            </div>
+            <div class="second">
+              <button type="sumbit" value="ok"> Submit </button>
+            </div>
+          </div>
+      </form>
+    </div>
+
+  </body>
+</html>

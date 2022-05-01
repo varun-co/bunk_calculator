@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> bunk calculator </title>
+        <link rel= "stylesheet" href="{{ url_for('static',filename='css/styles.css') }}">
+    </head>
+    <body>
+        <table>
+            <tr>
+                <th> Course Code</th>
+                <th> Course Name </th>
+                <th> Total classes</th>
+                <th> Total Marked </th>
+                <th> Total Present </th>
+                <th> Percentage </th>
+                <th> Total bunks </th>
+                <th> Bunks Left </th>
+            </tr>
+            {% for row in result %}
+            <tr>
+                    {% for ele in row %}
+                    <td>
+                        {{ele}}
+                    </td>
+                    {% endfor %}
+            {% endfor %}
+            </tr>
+            <tr>
+                    <td colspan="2">
+                        Total
+                    </td>
+                    {% for item in total %}
+                    <td>
+                        {{item}}
+                    </td>
+                    {%endfor %}
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
