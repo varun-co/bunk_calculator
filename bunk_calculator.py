@@ -17,7 +17,7 @@ def convert_pdf_to_csv(mode, filename):
                 tables.pop()
             for table in tables:
                 data = pd.DataFrame(table[1:], columns=table[0])
-                data.to_csv(filename + '.csv', mode='a', encoding="ANSI")
+                data.to_csv(filename + '.csv', mode='a', encoding="utf-8")
 
 
 def preprocess_csv(filename):
