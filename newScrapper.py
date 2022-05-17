@@ -26,11 +26,16 @@ class scrapper :
     def __init__(self,url):
         self.url = url
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
         chrome_options.add_argument("--silent")
+        chrome_options.add_argument("--headless")
         chrome_options.add_experimental_option('excludeSwitches',
                                             ['enable-logging'])
-        self.driver = webdriver.Chrome(options=chrome_options)
+        if os.name =='nt':
+            self.driver = webdriver.Chrome(options=chrome_options)
+        elif os.name == 'posix':
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            execpath= dir_path+'/chromedriver'
+            self.driver = webdriver.Chrome(executable_path=execpath,options=chrome_options)
         self.page = self.driver.get(url)
         self.captchaPath = 'static/image/cap.png'
         img = WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="imgCaptcha"]')))
@@ -56,11 +61,11 @@ class scrapper :
         WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="answer"]'))).send_keys(cap)
         WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="frmLogin"]/div[3]/table/tbody/tr[6]/td/input'))).click()
         try:
-            time.sleep(0.5)
-            WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="masterdiv"]/div[6]/a/font'))).click()
+            #time.sleep(0.5)
+            WebDriverWait(self.driver,3).until(EC.presence_of_element_located((By.XPATH,'//*[@id="masterdiv"]/div[6]/a/font'))).click()
         except:
             self.driver.close()
-            self.getTimeTable(reg_no, password,cap)
+            return (False,False)
         #timetable = WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="courseDetails"]/tbody/tr')))
 
         cols = WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="courseDetails"]/tbody/tr[3]/td')))
@@ -94,6 +99,7 @@ class scrapper :
             pass
         convert_pdf_to_csv('cal', 'MC-Calandar_2021-22')
         lt = preprocess_csv('MC-Calandar_2021-22.csv')
+       
         days = get_days_dict(lt)
         print(days)
         days['Wed'] = days['Wed'] - 1
